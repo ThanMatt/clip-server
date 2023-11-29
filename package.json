@@ -13,6 +13,7 @@
     "clipboardy": "^4.0.0",
     "http": "^0.0.1-security",
     "node-notifier": "^10.0.1",
-    "open": "^9.1.0"
+    "open": "^9.1.0",
+    "os": "^0.1.2"
   }
 }

@@ -2,6 +2,7 @@ import http from "http";
 import notifier from "node-notifier";
 import clipboardy from "clipboardy";
 import open from "open";
+import getServerIp from "./utils/getServerIp.js";
 const port = 3000; // You can choose any port that's open
 
 const server = http.createServer((req, res) => {
@@ -34,5 +35,6 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  const ipAddress = getServerIp();
+  console.log(`Server running on ${ipAddress}:${port}`);
 });
