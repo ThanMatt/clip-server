@@ -1,15 +1,12 @@
-import http from "http"
+import clipboardy from "clipboardy"
+import open from "open"
 import notifier from "node-notifier"
 import getServerIp from "./utils/getServerIp"
 import express from "express"
 import morgan from "morgan"
 import multer from "multer"
 import path from "path"
-import fs from "fs"
 import { exec } from "child_process"
-
-const clipboardy = require("clipboardy")
-const open = require("open")
 
 const app = express()
 const port = 3000 // You can choose any port that's open
