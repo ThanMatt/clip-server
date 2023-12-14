@@ -7,6 +7,7 @@ import morgan from "morgan"
 import multer from "multer"
 import path from "path"
 import { exec } from "child_process"
+import fs from "fs"
 
 const app = express()
 const port = 3000 // You can choose any port that's open
@@ -17,7 +18,9 @@ app.use(morgan("combined"))
 
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
-    callback(null, "uploads/")
+    const filePath = `uploads/`
+    fs.mkdirSync(filePath, { recursive: true })
+    callback(null, filePath)
   },
   filename: (req, file, callback) => {
     const fileName = file.fieldname + "-" + Date.now() + path.extname(file.originalname)
