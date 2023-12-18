@@ -8,10 +8,18 @@
     "start": "node build/index.js",
     "build": "babel src -d build",
     "start:dev": "nodemon --exec babel-node src/index.js",
-    "compile": "yarn build && pkg . --targets node18-linux-x64,node18-macos-arm64,node18-win-x64"
+    "compile": "yarn build && pkg ."
   },
   "bin": {
     "clip-server": "./build/index.js"
+  },
+  "pkg": {
+    "outputPath": "bin",
+    "targets": [
+      "node18-macos-arm64",
+      "node18-linux-x64",
+      "node18-win-x64"
+    ]
   },
   "author": "Thanmatt",
   "license": "MIT",
