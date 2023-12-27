@@ -11,6 +11,9 @@ import fs from "fs"
 
 const app = express()
 const port = 3000 // You can choose any port that's open
+let isPolling = false
+let TIMEOUT = 5_000 // :: 30 seconds
+let responseFromHost = null
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -53,6 +56,28 @@ app.post("/text", (req, res) => {
     open(content)
   }
   console.log("Notification sent!")
+  return res.json({ success: true })
+})
+
+// :: Long polling
+app.get("/poll", (req, res) => {
+  isPolling = true
+  let response = null
+
+  setTimeout(async () => {
+    console.log("waiting")
+    if (!isPolling) {
+      response = responseFromHost
+      return res.json({ content: response })
+    }
+  }, TIMEOUT)
+})
+
+app.post("/content", (req, res) => {
+  const { content } = req.body
+
+  responseFromHost = content
+  isPolling = false
   return res.json({ success: true })
 })
 
