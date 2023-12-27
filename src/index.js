@@ -8,9 +8,12 @@ import multer from "multer"
 import path from "path"
 import { exec } from "child_process"
 import fs from "fs"
+import cors from "cors"
+import isYoutubeUrl from "./utils/isYoutubeUrl"
+import generateUrlScheme from "./utils/generateUrlScheme"
 
 const app = express()
-const port = 3000 // You can choose any port that's open
+const port = 4000 // You can choose any port that's open
 let isPolling = false
 let TIMEOUT = 5_000 // :: 30 seconds
 let responseFromHost = null
@@ -18,6 +21,7 @@ let responseFromHost = null
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(morgan("combined"))
+app.use(cors())
 
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
@@ -68,13 +72,22 @@ app.get("/poll", (req, res) => {
     console.log("waiting")
     if (!isPolling) {
       response = responseFromHost
-      return res.json({ content: response })
+      let urlScheme = null
+
+      console.log("response: ", response)
+      if (isYoutubeUrl(response)) {
+        urlScheme = generateUrlScheme(response, "youtube")
+        console.log("url scheme: ", urlScheme)
+      }
+      return res.json({ content: response, ...(urlScheme && { urlScheme }) })
     }
+    return res.json({ success: false })
   }, TIMEOUT)
 })
 
 app.post("/content", (req, res) => {
   const { content } = req.body
+  console.log(content)
 
   responseFromHost = content
   isPolling = false
