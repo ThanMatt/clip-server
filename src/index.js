@@ -12,6 +12,8 @@ import cors from "cors"
 import isYoutubeUrl from "./utils/isYoutubeUrl"
 import generateUrlScheme from "./utils/generateUrlScheme"
 
+require("dotenv").config()
+
 const app = express()
 const port = 4000 // You can choose any port that's open
 let isPolling = false
@@ -83,6 +85,12 @@ app.get("/poll", (req, res) => {
     }
     return res.json({ success: false })
   }, TIMEOUT)
+})
+
+app.get("/client", (req, res) => {
+  // :: Open client application
+  open(process.env.CLIENT_URL)
+  res.json({ success: true })
 })
 
 app.post("/content", (req, res) => {
