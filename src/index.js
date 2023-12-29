@@ -12,6 +12,7 @@ import cors from "cors"
 import isYoutubeUrl from "./utils/isYoutubeUrl"
 import generateUrlScheme from "./utils/generateUrlScheme"
 import { v4 as uuidv4 } from "uuid"
+import isRedditUrl from "./utils/isRedditUrl"
 
 require("dotenv").config()
 
@@ -94,8 +95,10 @@ app.post("/content", (req, res) => {
     console.log("Payload: ", content)
     if (isYoutubeUrl(content)) {
       urlScheme = generateUrlScheme(content, "youtube")
-      console.log("url scheme: ", urlScheme)
+    } else if (isRedditUrl(content)) {
+      urlScheme = generateUrlScheme(content, "reddit")
     }
+    console.log("url scheme: ", urlScheme)
     clearTimeout(currentSession)
     currentSession = null
     if (!content) pollingRequest.res.json({ success: false })
@@ -103,7 +106,7 @@ app.post("/content", (req, res) => {
     return res.json({ success: true })
   }
 
-  return res.status(400).json({ success: false })
+  return res.status(400).json({ success: false, message: "No current session found" })
 })
 
 app.post("/image", upload.single("file"), (req, res) => {
