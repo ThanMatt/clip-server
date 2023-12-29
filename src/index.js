@@ -41,7 +41,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage })
 
 app.get("/", (req, res) => {
-  return res.json({
+  return res.status(200).json({
     success: true
   })
 })
@@ -64,7 +64,7 @@ app.post("/text", (req, res) => {
     open(content)
   }
   console.log("Notification sent!")
-  return res.json({ success: true })
+  return res.status(200).json({ success: true })
 })
 
 // :: Long polling
@@ -74,7 +74,7 @@ app.get("/poll", (req, res) => {
   currentSession = setTimeout(() => {
     if (currentSession) {
       currentSession = null
-      return res.json({ success: false })
+      return res.status(400).json({ success: false })
     }
   }, TIMEOUT)
 })
@@ -82,7 +82,7 @@ app.get("/poll", (req, res) => {
 app.get("/client", (req, res) => {
   // :: Open client application
   open(process.env.CLIENT_URL ?? "http://localhost:3000")
-  res.json({ success: true })
+  res.status(200).json({ success: true })
 })
 
 app.post("/content", (req, res) => {
@@ -101,9 +101,9 @@ app.post("/content", (req, res) => {
     console.log("url scheme: ", urlScheme)
     clearTimeout(currentSession)
     currentSession = null
-    if (!content) pollingRequest.res.json({ success: false })
-    pollingRequest.res.json({ content, ...(urlScheme && { urlScheme }) })
-    return res.json({ success: true })
+    if (!content) pollingRequest.res.status(200).json({ success: false })
+    pollingRequest.res.status(200).json({ content, ...(urlScheme && { urlScheme }) })
+    return res.status(200).json({ success: true })
   }
 
   return res.status(400).json({ success: false, message: "No current session found" })
