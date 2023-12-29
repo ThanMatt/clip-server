@@ -1,6 +1,6 @@
 ## Overview
 
-The CLIP (Convenient Local Interface for Peer-to-peer transfer) Server is an Express API server that facilitates data transfer between the CLIP Client and your phone. It acts as the communication bridge in our system, enabling seamless transfer of texts and links from a Windows/Linux PC to an iPhone's clipboard. Future enhancements will include photo transfers and Android compatibility.
+The CLIP (Convenient Local Interface for Peer-to-peer transfer) Server is an Express API server that facilitates data transfer between the [CLIP Client](https://github.com/ThanMatt/clip-client) and your phone. It acts as the communication bridge in our system, enabling seamless transfer of texts and links from a Windows/Linux PC to an iPhone's clipboard. Future enhancements will include photo transfers and Android compatibility.
 
 ## Requirements
 
