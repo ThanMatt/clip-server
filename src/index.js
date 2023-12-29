@@ -11,14 +11,15 @@ import fs from "fs"
 import cors from "cors"
 import isYoutubeUrl from "./utils/isYoutubeUrl"
 import generateUrlScheme from "./utils/generateUrlScheme"
+import { v4 as uuidv4 } from "uuid"
 
 require("dotenv").config()
 
 const app = express()
 const port = 4000 // You can choose any port that's open
-let isPolling = false
-let TIMEOUT = 5_000 // :: 30 seconds
-let responseFromHost = null
+let TIMEOUT = 30_000 // :: 30 seconds
+let pollingRequest = {} // :: Store current response object from /poll
+let currentSession = null
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -67,39 +68,42 @@ app.post("/text", (req, res) => {
 
 // :: Long polling
 app.get("/poll", (req, res) => {
-  isPolling = true
-  let response = null
+  pollingRequest = { res }
 
-  setTimeout(async () => {
-    console.log("waiting")
-    if (!isPolling) {
-      response = responseFromHost
-      let urlScheme = null
-
-      console.log("response: ", response)
-      if (isYoutubeUrl(response)) {
-        urlScheme = generateUrlScheme(response, "youtube")
-        console.log("url scheme: ", urlScheme)
-      }
-      return res.json({ content: response, ...(urlScheme && { urlScheme }) })
+  currentSession = setTimeout(() => {
+    if (currentSession) {
+      currentSession = null
+      return res.json({ success: false })
     }
-    return res.json({ success: false })
   }, TIMEOUT)
 })
 
 app.get("/client", (req, res) => {
   // :: Open client application
-  open(process.env.CLIENT_URL)
+  open(process.env.CLIENT_URL ?? "http://localhost:3000")
   res.json({ success: true })
 })
 
 app.post("/content", (req, res) => {
   const { content } = req.body
-  console.log(content)
+  let urlScheme = null
 
-  responseFromHost = content
-  isPolling = false
-  return res.json({ success: true })
+  if (currentSession) {
+    console.log("Payload received")
+
+    console.log("Payload: ", content)
+    if (isYoutubeUrl(content)) {
+      urlScheme = generateUrlScheme(content, "youtube")
+      console.log("url scheme: ", urlScheme)
+    }
+    clearTimeout(currentSession)
+    currentSession = null
+    if (!content) pollingRequest.res.json({ success: false })
+    pollingRequest.res.json({ content, ...(urlScheme && { urlScheme }) })
+    return res.json({ success: true })
+  }
+
+  return res.status(400).json({ success: false })
 })
 
 app.post("/image", upload.single("file"), (req, res) => {
