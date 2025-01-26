@@ -13,6 +13,7 @@ import isYoutubeUrl from "./utils/isYoutubeUrl"
 import generateUrlScheme from "./utils/generateUrlScheme"
 import { v4 as uuidv4 } from "uuid"
 import isRedditUrl from "./utils/isRedditUrl"
+import { ClipDiscoveryService } from "./services/ClipDiscovery"
 
 require("dotenv").config()
 
@@ -21,6 +22,8 @@ const port = 4000 // You can choose any port that's open
 let TIMEOUT = 30_000 // :: 30 seconds
 let pollingRequest = {} // :: Store current response object from /poll
 let currentSession = null
+
+const discoveryService = new ClipDiscoveryService(port)
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -44,6 +47,11 @@ app.get("/", (req, res) => {
   return res.status(200).json({
     success: true
   })
+})
+
+app.get("/servers", (req, res) => {
+  const servers = discoveryService.getActiveServers()
+  return res.json({ servers })
 })
 
 app.post("/text", (req, res) => {
@@ -148,4 +156,17 @@ app.post("/image", upload.single("file"), (req, res) => {
 app.listen(port, () => {
   const ipAddress = getServerIp()
   console.log(`Server running on ${ipAddress}:${port}`)
+  console.log(`Client running on ${process.env.CLIENT_URL ?? "http://localhost:3000"}`)
+
+  discoveryService.start()
+
+  discoveryService.setServersUpdatedCallback((servers) => {
+    console.log("Available CLIP Servers: ", servers)
+  })
+})
+
+// :: Handle graceful shutdown
+process.on("SIGINT", () => {
+  discoveryService.stop()
+  process.exit()
 })
