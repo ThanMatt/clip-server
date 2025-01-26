@@ -18,7 +18,7 @@ import { ClipDiscoveryService } from "./services/ClipDiscovery"
 require("dotenv").config()
 
 const app = express()
-const port = 4000 // You can choose any port that's open
+const port = Number(process.env.SERVER_PORT) ?? 4000 // You can choose any port that's open
 let TIMEOUT = 30_000 // :: 30 seconds
 let pollingRequest = {} // :: Store current response object from /poll
 let currentSession = null
