@@ -23,7 +23,6 @@ export class ClipDiscoveryService {
 
         if (message.includes('"service":"CLIP"')) {
           const data = JSON.parse(msg.toString())
-          console.log("🚀 ~ ClipDiscoveryService ~ this.socket.on ~ data:", data)
 
           if (data.service === "CLIP" && data.type === "announcement") {
             this.handleServerAnnouncement(data, rinfo)

@@ -10,14 +10,14 @@ require("dotenv").config()
 const app = express()
 const port = Number(process.env.SERVER_PORT) || 4000 // You can choose any port that's open
 
-const discoveryService = new ClipDiscoveryService(port)
+export const discoveryService = new ClipDiscoveryService(port)
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(morgan("combined"))
 app.use(cors())
 
-app.use("/", routes)
+app.use("/", routes(discoveryService))
 
 app.listen(port, () => {
   const ipAddress = getServerIp()
