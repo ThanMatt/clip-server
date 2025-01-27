@@ -87,17 +87,21 @@ export default function (discoveryService) {
 
     console.log("Payload received")
 
-    console.log("Payload: ", content)
-    if (isYoutubeUrl(content)) {
-      urlScheme = generateUrlScheme(content, "youtube")
-    } else if (isRedditUrl(content)) {
-      urlScheme = generateUrlScheme(content, "reddit")
+    if (pollingRequest) {
+      console.log("Payload: ", content)
+      if (isYoutubeUrl(content)) {
+        urlScheme = generateUrlScheme(content, "youtube")
+      } else if (isRedditUrl(content)) {
+        urlScheme = generateUrlScheme(content, "reddit")
+      }
+      console.log("url scheme: ", urlScheme)
+      clearTimeout(currentSession)
+      currentSession = null
+      if (!content) pollingRequest.res.status(200).json({ success: false })
+      pollingRequest.res.status(200).json({ content, ...(urlScheme && { urlScheme }) })
+    } else {
+      return res.status(200).json({ content })
     }
-    console.log("url scheme: ", urlScheme)
-    clearTimeout(currentSession)
-    currentSession = null
-    if (!content) pollingRequest.res.status(200).json({ success: false })
-    pollingRequest.res.status(200).json({ content, ...(urlScheme && { urlScheme }) })
     return res.status(200).json({ success: true })
   })
 
