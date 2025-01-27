@@ -85,9 +85,9 @@ export default function (discoveryService) {
     const { content } = req.body
     let urlScheme = null
 
-    console.log("Payload received")
+    if (currentSession) {
+      console.log("Payload received")
 
-    if (pollingRequest) {
       console.log("Payload: ", content)
       if (isYoutubeUrl(content)) {
         urlScheme = generateUrlScheme(content, "youtube")
@@ -99,10 +99,10 @@ export default function (discoveryService) {
       currentSession = null
       if (!content) pollingRequest.res.status(200).json({ success: false })
       pollingRequest.res.status(200).json({ content, ...(urlScheme && { urlScheme }) })
-    } else {
-      return res.status(200).json({ content })
+      return res.status(200).json({ success: true })
     }
-    return res.status(200).json({ success: true })
+
+    return res.status(400).json({ success: false, message: "No current session found" })
   })
 
   router.post("/image", upload.single("file"), (req, res) => {
