@@ -1,4 +1,3 @@
-// discovery.js
 import dgram from "dgram"
 import os from "os"
 
@@ -8,7 +7,7 @@ export class ClipDiscoveryService {
     this.DISCOVERY_PORT = 1900
     this.serverPort = serverPort
     this.deviceName = deviceName
-    this.activeServers = new Map() // Store discovered servers
+    this.activeServers = new Map() // :: Store discovered servers
     this.socket = dgram.createSocket({ type: "udp4", reuseAddr: true })
     this.setupSocket()
   }
@@ -45,11 +44,13 @@ export class ClipDiscoveryService {
 
   start() {
     this.socket.bind(this.DISCOVERY_PORT)
-    // Start broadcasting presence
+    // :: Start broadcasting presence
     this.broadcastPresence()
-    // Set up periodic broadcasting
+
+    // :: Set up periodic broadcasting
     this.broadcastInterval = setInterval(() => this.broadcastPresence(), 10000)
-    // Set up server cleanup
+
+    // :: Set up server cleanup
     this.cleanupInterval = setInterval(() => this.cleanupServers(), 30000)
   }
 
@@ -73,7 +74,7 @@ export class ClipDiscoveryService {
   }
 
   handleServerAnnouncement(data, rinfo) {
-    // Don't store our own announcements
+    // :: Don't store our own announcements
     if (rinfo.address === this.getLocalIP()) return
 
     const serverId = `${rinfo.address}:${data.port}`
@@ -85,7 +86,7 @@ export class ClipDiscoveryService {
       lastSeen: Date.now()
     })
 
-    // Emit server list update if callback is set
+    // :: Emit server list update if callback is set
     if (this.onServersUpdated) {
       this.onServersUpdated(Array.from(this.activeServers.values()))
     }
@@ -94,13 +95,13 @@ export class ClipDiscoveryService {
   cleanupServers() {
     const now = Date.now()
     for (const [serverId, server] of this.activeServers.entries()) {
-      // Remove servers not seen in the last 30 seconds
+      // :: Remove servers not seen in the last 30 seconds
       if (now - server.lastSeen > 30000) {
         this.activeServers.delete(serverId)
       }
     }
 
-    // Emit server list update if callback is set
+    // :: Emit server list update if callback is set
     if (this.onServersUpdated) {
       this.onServersUpdated(Array.from(this.activeServers.values()))
     }
@@ -123,7 +124,7 @@ export class ClipDiscoveryService {
     return Array.from(this.activeServers.values())
   }
 
-  // Set callback for server list updates
+  // :: Set callback for server list updates
   setServersUpdatedCallback(callback) {
     this.onServersUpdated = callback
   }

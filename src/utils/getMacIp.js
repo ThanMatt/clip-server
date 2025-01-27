@@ -2,19 +2,19 @@
  * @param {*} interfaces
  * @returns {string}
  */
-export default function getMacIp(interfaces) {
-  const wifiInterfaceName = ["en0", "en1"];
+export function getMacIp(interfaces) {
+  const wifiInterfaceName = ["en0", "en1"]
 
   for (const name of wifiInterfaceName) {
-    const wifiInterface = interfaces[name];
+    const wifiInterface = interfaces[name]
 
     if (wifiInterface) {
       for (const iface of wifiInterface) {
         if (iface.family === "IPv4" && !iface.internal) {
-          return iface.address;
+          return iface.address
         }
       }
     }
   }
-  return "127.0.0.1";
+  return "127.0.0.1"
 }

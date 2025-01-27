@@ -1,7 +1,7 @@
 import os from "os"
 import getMacIp from "./getMacIp.js"
 
-export default function getServerIp() {
+export function getServerIp() {
   const platform = os.platform()
   const interfaces = os.networkInterfaces()
 
