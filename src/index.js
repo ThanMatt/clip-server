@@ -25,10 +25,6 @@ app.listen(port, () => {
   console.log(`Client running on ${process.env.CLIENT_URL ?? "http://localhost:3000"}`)
 
   discoveryService.start()
-
-  discoveryService.setServersUpdatedCallback((servers) => {
-    console.log("Available CLIP Servers: ", servers)
-  })
 })
 
 // :: Handle graceful shutdown
