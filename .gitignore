@@ -4,3 +4,5 @@ build
 bin
 .DS_Store
 .env
+
+*.code-workspace
