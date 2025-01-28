@@ -1,5 +1,6 @@
 import dgram from "dgram"
 import os from "os"
+import { SettingsManager } from "../settings"
 
 export class ClipDiscoveryService {
   constructor(serverPort, deviceName = os.hostname()) {
@@ -8,6 +9,7 @@ export class ClipDiscoveryService {
     this.serverPort = serverPort
     this.deviceName = deviceName
     this.activeServers = new Map() // :: Store discovered servers
+    this.settingsManager = new SettingsManager()
     this.socket = dgram.createSocket({ type: "udp4", reuseAddr: true })
     this.setupSocket()
   }
@@ -41,8 +43,12 @@ export class ClipDiscoveryService {
     })
   }
 
-  start() {
+  async start() {
+    // :: Initialize settings
+    await this.settingsManager.load()
+
     this.socket.bind(this.DISCOVERY_PORT)
+
     // :: Start broadcasting presence
     this.broadcastPresence()
 
@@ -59,7 +65,21 @@ export class ClipDiscoveryService {
     this.socket.close()
   }
 
+  async setDiscoverable(discoverable) {
+    await this.settingsManager.setDiscoverable(discoverable)
+    if (discoverable) {
+      this.broadcastPresence()
+    }
+    return discoverable
+  }
+
+  getDiscoverable() {
+    return this.settingsManager.getDiscoverable()
+  }
+
   broadcastPresence() {
+    if (!this.getDiscoverable()) return
+
     const announcement = {
       service: "CLIP",
       type: "announcement",

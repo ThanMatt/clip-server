@@ -140,5 +140,16 @@ export default function (discoveryService) {
       res.status(400).json({ success: false })
     }
   })
+
+  router.patch("/settings", async (req, res) => {
+    const { discoverable } = req.body.settings
+    const result = await discoveryService.setDiscoverable(discoverable)
+    res.json({ success: true, discoverable: result })
+  })
+
+  router.get("/settings", (req, res) => {
+    const discoverable = discoveryService.getDiscoverable()
+    res.json({ discoverable })
+  })
   return router
 }
