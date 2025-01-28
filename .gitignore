@@ -6,3 +6,4 @@ bin
 .env
 
 *.code-workspace
+settings.json
