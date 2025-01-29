@@ -142,13 +142,13 @@ export default function (discoveryService, settingsManager) {
   })
 
   router.patch("/settings", async (req, res) => {
-    const { discoverable } = req.body.settings
-    const result = await discoveryService.setDiscoverable(discoverable)
-    res.json({ success: true, discoverable: result })
+    const { isDiscoverable } = req.body.settings
+    const result = await discoveryService.setDiscoverable(isDiscoverable)
+    res.json({ success: true })
   })
 
   router.get("/settings", (req, res) => {
-    const settings = settingsManager.settings
+    const settings = discoveryService.getSettings()
     res.json({ ...settings })
   })
   return router

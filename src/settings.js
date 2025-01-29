@@ -14,9 +14,12 @@ export class SettingsManager {
 
   async load() {
     try {
-      await this.updateServerIp()
       const data = await fs.readFile(this.settingsPath, "utf8")
+
+      this.settings.serverIp = getServerIp()
+      this.settings.serverPort = Number(process.env.SERVER_PORT)
       this.settings = JSON.parse(data)
+      this.save()
     } catch (error) {
       // :: If file doesn't exist, create it with default settings
       await this.save()

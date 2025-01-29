@@ -77,6 +77,10 @@ export class ClipDiscoveryService {
     return this.settingsManager.getDiscoverable()
   }
 
+  getSettings() {
+    return this.settingsManager.getSettings()
+  }
+
   broadcastPresence() {
     if (!this.getDiscoverable()) return
 
