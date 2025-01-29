@@ -14,6 +14,7 @@ export class SettingsManager {
 
   async load() {
     try {
+      await this.updateServerIp()
       const data = await fs.readFile(this.settingsPath, "utf8")
       this.settings = JSON.parse(data)
     } catch (error) {
@@ -31,6 +32,13 @@ export class SettingsManager {
     this.settings.isDiscoverable = isDiscoverable
     await this.save()
     return isDiscoverable
+  }
+
+  async updateServerIp() {
+    this.settings.serverIp = getServerIp()
+    this.settings.serverPort = Number(process.env.SERVER_PORT)
+
+    await this.save()
   }
 
   getDiscoverable() {
