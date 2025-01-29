@@ -1,11 +1,14 @@
 import fs from "fs/promises"
 import path from "path"
+import { getServerIp } from "./utils/getServerIp"
 
 export class SettingsManager {
   constructor() {
     this.settingsPath = path.join(process.cwd(), "settings.json")
     this.settings = {
-      isDiscoverable: true
+      isDiscoverable: true,
+      serverIp: getServerIp(),
+      serverPort: Number(process.env.SERVER_PORT)
     }
   }
 
@@ -32,5 +35,9 @@ export class SettingsManager {
 
   getDiscoverable() {
     return this.settings.isDiscoverable
+  }
+
+  getSettings() {
+    return this.settings
   }
 }

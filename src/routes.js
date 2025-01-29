@@ -30,7 +30,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage })
 
-export default function (discoveryService) {
+export default function (discoveryService, settingsManager) {
   router.get("/", (req, res) => {
     return res.status(200).json({
       success: true
@@ -148,8 +148,8 @@ export default function (discoveryService) {
   })
 
   router.get("/settings", (req, res) => {
-    const discoverable = discoveryService.getDiscoverable()
-    res.json({ discoverable })
+    const settings = settingsManager.settings
+    res.json({ ...settings })
   })
   return router
 }

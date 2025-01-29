@@ -4,6 +4,7 @@ import morgan from "morgan"
 import cors from "cors"
 import { ClipDiscoveryService } from "./services/ClipDiscovery"
 import routes from "./routes"
+import { SettingsManager } from "./settings"
 
 require("dotenv").config()
 
@@ -11,13 +12,14 @@ const app = express()
 const port = Number(process.env.SERVER_PORT) || 4000 // You can choose any port that's open
 
 export const discoveryService = new ClipDiscoveryService(port)
+export const settingsManager = new SettingsManager()
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(morgan("combined"))
 app.use(cors())
 
-app.use("/", routes(discoveryService))
+app.use("/", routes(discoveryService, settingsManager))
 
 app.listen(port, () => {
   const ipAddress = getServerIp()
