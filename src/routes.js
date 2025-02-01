@@ -77,7 +77,7 @@ export default function (discoveryService, settingsManager) {
 
   router.get("/client", (req, res) => {
     // :: Open client application
-    open(process.env.CLIENT_URL ?? "http://localhost:3000")
+    open(process.env.CLIENT_URL ?? "http://localhost:5000")
     res.status(200).json({ success: true })
   })
 
