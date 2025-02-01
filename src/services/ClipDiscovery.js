@@ -1,6 +1,7 @@
 import dgram from "dgram"
 import os from "os"
 import { SettingsManager } from "../settings"
+import { getServerIp } from "../utils/getServerIp"
 
 export class ClipDiscoveryService {
   constructor(serverPort, deviceName = os.hostname()) {
@@ -131,16 +132,7 @@ export class ClipDiscoveryService {
   }
 
   getLocalIP() {
-    const interfaces = os.networkInterfaces()
-    for (const devName in interfaces) {
-      const iface = interfaces[devName]
-      for (const alias of iface) {
-        if (alias.family === "IPv4" && !alias.internal) {
-          return alias.address
-        }
-      }
-    }
-    return "127.0.0.1"
+    return getServerIp()
   }
 
   getActiveServers() {
