@@ -10,7 +10,7 @@ import path from "path"
 require("dotenv").config()
 
 const app = express()
-const port = Number(process.env.SERVER_PORT) || 4000 // You can choose any port that's open
+const port = Number(process.env.SERVER_PORT) || 5000 // You can choose any port that's open
 
 export const discoveryService = new ClipDiscoveryService(port)
 export const settingsManager = new SettingsManager()

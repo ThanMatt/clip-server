@@ -8,7 +8,7 @@ export class SettingsManager {
     this.settings = {
       isDiscoverable: true,
       serverIp: getServerIp(),
-      serverPort: Number(process.env.SERVER_PORT)
+      serverPort: Number(process.env.SERVER_PORT) ?? 5000
     }
   }
 
@@ -17,7 +17,7 @@ export class SettingsManager {
       const data = await fs.readFile(this.settingsPath, "utf8")
 
       this.settings.serverIp = getServerIp()
-      this.settings.serverPort = Number(process.env.SERVER_PORT)
+      this.settings.serverPort = Number(process.env.SERVER_PORT) ?? 5000
       this.settings = JSON.parse(data)
       this.save()
     } catch (error) {
@@ -39,7 +39,7 @@ export class SettingsManager {
 
   async updateServerIp() {
     this.settings.serverIp = getServerIp()
-    this.settings.serverPort = Number(process.env.SERVER_PORT)
+    this.settings.serverPort = Number(process.env.SERVER_PORT) ?? 5000
 
     await this.save()
   }
