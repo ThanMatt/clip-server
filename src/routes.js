@@ -10,6 +10,7 @@ import path from "path"
 import fs from "fs"
 
 import multer from "multer"
+import { copyToClipboard } from "./utils/copyToClipboard"
 const router = express.Router()
 
 const TIMEOUT = 30000
@@ -48,7 +49,7 @@ export default function (discoveryService, settingsManager) {
 
     console.log(`Data received from ${deviceName}: ${req.body}`)
 
-    clipboardy.writeSync(content)
+    copyToClipboard(text)
 
     notifier.notify({
       title: `New content from ${deviceName}`,
