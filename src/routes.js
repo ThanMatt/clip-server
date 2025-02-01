@@ -49,7 +49,7 @@ export default function (discoveryService, settingsManager) {
 
     console.log(`Data received from ${deviceName}: ${req.body}`)
 
-    copyToClipboard(text)
+    copyToClipboard(content)
 
     notifier.notify({
       title: `New content from ${deviceName}`,
