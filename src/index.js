@@ -5,6 +5,7 @@ import cors from "cors"
 import { ClipDiscoveryService } from "./services/ClipDiscovery"
 import routes from "./routes"
 import { SettingsManager } from "./settings"
+import path from "path"
 
 require("dotenv").config()
 
@@ -19,7 +20,8 @@ app.use(express.urlencoded({ extended: true }))
 app.use(morgan("combined"))
 app.use(cors())
 
-app.use("/", routes(discoveryService, settingsManager))
+app.use("/api", routes(discoveryService, settingsManager))
+app.use(express.static(path.join(__dirname, "../../clip-client/dist")))
 
 app.listen(port, () => {
   const ipAddress = getServerIp()
@@ -27,6 +29,11 @@ app.listen(port, () => {
   console.log(`Client running on ${process.env.CLIENT_URL ?? "http://localhost:3000"}`)
 
   discoveryService.start()
+})
+
+// :: Serve React app for all other routes
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../../clip-client/dist/index.html"))
 })
 
 // :: Handle graceful shutdown
