@@ -1,5 +1,4 @@
 import express from "express"
-import clipboardy from "clipboardy"
 import notifier from "node-notifier"
 import open from "open"
 import { exec } from "child_process"

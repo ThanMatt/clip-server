@@ -1,4 +1,5 @@
 import { exec } from "child_process"
+import clipboardy from "clipboardy"
 
 export function copyToClipboard(text) {
   const command =
@@ -6,7 +7,7 @@ export function copyToClipboard(text) {
       ? `echo ${text.trim()} | clip`
       : process.platform === "darwin"
         ? `echo "${text}" | pbcopy`
-        : `echo "${text}" | xsel -ib`
+        : clipboardy.writeSync(text)
 
   return new Promise((resolve, reject) => {
     exec(command, (error) => {
