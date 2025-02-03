@@ -6,7 +6,7 @@ export function copyToClipboard(text) {
       ? `echo ${text.trim()} | clip`
       : process.platform === "darwin"
         ? `echo "${text}" | pbcopy`
-        : `echo "${text}" | xclip -selection clipboard`
+        : `echo "${text}" | xsel -ib`
 
   return new Promise((resolve, reject) => {
     exec(command, (error) => {
